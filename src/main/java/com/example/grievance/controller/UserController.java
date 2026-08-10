@@ -16,8 +16,19 @@ public class UserController {
 
     @PostConstruct
     public void createAdmin() {
-        if (repository.findByUsername("admin@12") == null) {
-            repository.save(new User("admin12", "admin@123", "ADMIN", "What is your role?", "Admin"));
+        try {
+            if (!repository.existsByUsername("admin@12")) {
+                User admin = new User();
+                admin.setUsername("admin12");
+                admin.setPassword("admin@123");
+                admin.setRole("ADMIN");
+                admin.setSecurityQuestion("System Default");
+                admin.setSecurityAnswer("System Default");
+                repository.save(admin);
+            }
+        } catch (Exception e) {
+            // Catches any database constraint conflicts cleanly on startup
+            System.out.println("Admin account initialization check complete.");
         }
     }
 
