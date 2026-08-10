@@ -3,235 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grievance Portal</title>
+    <title>Grievance Tracker - Login</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); width: 90%; max-width: 350px; text-align: center; }
-        input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #0056b3; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px;}
-        button:hover { background: #004494; }
-        .toggle-text { margin-top: 15px; font-size: 13px; color: #555; cursor: pointer; text-decoration: underline; }
+        /* Base Styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            background: linear-gradient(rgba(13, 17, 23, 0.85), rgba(13, 17, 23, 0.95)),
+            url('https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2070&auto=format&fit=crop') center/cover fixed no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-        /* New Canvas Captcha Styles */
-        .captcha-box { background: #f8f9fa; padding: 10px; border-radius: 6px; margin: 10px 0; border: 1px solid #ccc; display: flex; flex-direction: column; align-items: center; }
-        .captcha-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; width: 100%; }
-        canvas { border: 1px solid #aaa; border-radius: 4px; background: white; }
-        .refresh-btn { width: auto; padding: 8px 12px; margin: 0; background: #6c757d; font-size: 16px; }
-        .refresh-btn:hover { background: #5a6268; }
+        /* Frosted Glass Card Container - WIDENED to 650px, but SHORTER vertically */
+        .login-card {
+            background: rgba(22, 27, 34, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid #30363d;
+            padding: 40px 50px; /* Reduced top/bottom padding to make it shorter */
+            border-radius: 16px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+            color: #c9d1d9;
+            text-align: center;
+            margin: auto;
+        }
+
+        .brand-title {
+            color: #58a6ff;
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 5px; /* Tighter spacing */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #8b949e;
+            margin-bottom: 25px; /* Tighter spacing */
+        }
+
+        /* Form Inputs & Elements */
+        .input-group {
+            margin-bottom: 16px; /* Tighter spacing between boxes */
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px; /* Tighter spacing */
+            color: #8b949e;
+        }
+
+        /* Reduced vertical thickness of the typing boxes */
+        input, select {
+            width: 100%;
+            padding: 14px 16px; /* Reduced vertical padding */
+            background: #0d1117;
+            border: 2px solid #30363d;
+            color: #ffffff;
+            border-radius: 10px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        /* Modern SVG Password Eye Button */
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-container input {
+            padding-right: 50px;
+        }
+
+        .eye-btn {
+            position: absolute;
+            right: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #8b949e;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .eye-btn:hover { color: #58a6ff; }
+
+        .eye-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Captcha Section */
+        .captcha-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
+            background: #0d1117;
+            padding: 10px;
+            border: 2px solid #30363d;
+            border-radius: 10px;
+        }
+
+        canvas {
+            background: #ffffff;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .refresh-btn {
+            background: transparent;
+            border: none;
+            color: #8b949e;
+            cursor: pointer;
+            font-size: 20px;
+            transition: color 0.2s;
+        }
+        .refresh-btn:hover { color: #58a6ff; }
+
+        /* Action Buttons */
+        .btn-submit {
+            width: 100%;
+            padding: 14px; /* Reduced vertical thickness */
+            background: #238636;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: #2ea043; }
+
+        /* Footer Links */
+        .card-footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #8b949e;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card-footer a {
+            color: #58a6ff;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-weight: 600;
+        }
+        .card-footer a:hover { text-decoration: underline; color: #79c0ff; }
+
+        /* Hidden Utility Class */
+        .hidden { display: none; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+            .brand-title {
+                font-size: 24px;
+                white-space: normal;
+            }
+        }
     </style>
 </head>
 <body>
 
-<!-- 1. LOGIN SCREEN -->
-<form class="card" id="loginBox" onsubmit="event.preventDefault(); login();">
-    <h2>Grievance Portal</h2>
-    <input type="text" id="loginUser" placeholder="Username" required>
-    <input type="password" id="loginPass" placeholder="Password" required>
+<div class="login-card">
+    <div class="brand-title">🏛️ Grievance Tracker</div>
+    <div class="subtitle" id="formSubtitle">Secure Portal Access</div>
 
-    <!-- Upgraded Distorted Captcha Box -->
-    <div class="captcha-box">
-        <div class="captcha-row">
-            <canvas id="captchaCanvas" width="140" height="40"></canvas>
-            <!-- type="button" stops the Enter key from clicking this button -->
-            <button type="button" class="refresh-btn" onclick="generateCaptcha()" title="Refresh Captcha">↻</button>
+    <!-- LOGIN FORM -->
+    <div id="loginSection">
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="loginUser" placeholder="Enter your username">
         </div>
-        <input type="text" id="loginCaptchaInput" placeholder="Enter the letters above" required autocomplete="off">
+        <div class="input-group">
+            <label>Password</label>
+            <div class="password-container">
+                <input type="password" id="loginPass" placeholder="Enter your password">
+                <button type="button" class="eye-btn" onclick="togglePassword('loginPass', this)" title="Show/Hide Password">
+                    <svg class="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Verification Captcha</label>
+            <div class="captcha-box">
+                <!-- FIX: Widened canvas from 120 to 140 so it doesn't get cut off -->
+                <canvas id="captchaCanvas" width="140" height="40"></canvas>
+                <button type="button" class="refresh-btn" onclick="drawCaptcha()" title="Refresh Captcha">🔄</button>
+            </div>
+            <!-- FIX: Updated Placeholder -->
+            <input type="text" id="captchaInput" placeholder="Enter the captcha above">
+        </div>
+
+        <button class="btn-submit" onclick="login()">Sign In</button>
+
+        <div class="card-footer">
+            <div>Don't have an account? <a onclick="showSignup()">Sign Up</a></div>
+            <div><a onclick="showForgot()">Forgot Password?</a></div>
+        </div>
     </div>
 
-    <button type="submit">Login</button>
-    <div class="toggle-text" onclick="showScreen('signupBox')">Need an account? Sign Up</div>
-    <div class="toggle-text" onclick="showScreen('forgotBox')">Forgot Password?</div>
-</form>
+    <!-- SIGNUP FORM -->
+    <div id="signupSection" class="hidden">
+        <div class="input-group">
+            <label>Choose Username</label>
+            <input type="text" id="signupUser" placeholder="Choose a username">
+        </div>
+        <div class="input-group">
+            <label>Choose Password</label>
+            <div class="password-container">
+                <input type="password" id="signupPass" placeholder="Create a password">
+                <button type="button" class="eye-btn" onclick="togglePassword('signupPass', this)" title="Show/Hide Password">
+                    <svg class="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Security Question</label>
+            <select id="signupQ">
+                <option value="What is your pet's name?">What is your pet's name?</option>
+                <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                <option value="What city were you born in?">What city were you born in?</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Security Answer</label>
+            <input type="text" id="signupA" placeholder="Answer to question">
+        </div>
 
-<!-- 2. SIGNUP SCREEN -->
-<form class="card" id="signupBox" style="display: none;" onsubmit="event.preventDefault(); signup();">
-    <h2>Create Account</h2>
-    <input type="text" id="signUser" placeholder="Choose a Username" required>
-    <input type="password" id="signPass" placeholder="Choose a Password" required>
+        <button class="btn-submit" style="background:#1f6feb;" onclick="signup()">Create Account</button>
 
-    <select id="signQuestion">
-        <option value="Childhood best friend's name?">Childhood best friend's name?</option>
-        <option value="What city were you born in?">What city were you born in?</option>
-        <option value="What is your favorite color?">What is your favorite color?</option>
-    </select>
-    <input type="text" id="signAnswer" placeholder="Your Security Answer" required>
+        <div class="card-footer">
+            <div>Already have an account? <a onclick="showLogin()">Sign In</a></div>
+        </div>
+    </div>
 
-    <button type="submit" style="background: #28a745;">Sign Up</button>
-    <div class="toggle-text" onclick="showScreen('loginBox')">Already have an account? Login</div>
-</form>
+    <!-- FORGOT PASSWORD FORM -->
+    <div id="forgotSection" class="hidden">
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="forgotUser" placeholder="Enter your username">
+        </div>
+        <div class="input-group">
+            <label>Security Answer</label>
+            <input type="text" id="forgotA" placeholder="Enter your security answer">
+        </div>
+        <div class="input-group">
+            <label>New Password</label>
+            <div class="password-container">
+                <input type="password" id="forgotNewPass" placeholder="Enter new password">
+                <button type="button" class="eye-btn" onclick="togglePassword('forgotNewPass', this)" title="Show/Hide Password">
+                    <svg class="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+        </div>
 
-<!-- 3. FORGOT PASSWORD SCREEN -->
-<form class="card" id="forgotBox" style="display: none;" onsubmit="event.preventDefault(); resetPassword();">
-    <h2>Reset Password</h2>
-    <p style="font-size: 13px; color: gray;">Enter your username to reset.</p>
-    <input type="text" id="resetUser" placeholder="Username" required>
-    <input type="text" id="resetAnswer" placeholder="Your Security Answer" required>
-    <input type="password" id="resetNewPass" placeholder="New Password" required>
+        <button class="btn-submit" style="background:#8957e5;" onclick="resetPassword()">Reset Password</button>
 
-    <button type="submit" style="background: #dc3545;">Reset Password</button>
-    <div class="toggle-text" onclick="showScreen('loginBox')">Back to Login</div>
-</form>
+        <div class="card-footer">
+            <div>Remembered your password? <a onclick="showLogin()">Sign In</a></div>
+        </div>
+    </div>
+</div>
 
 <script>
-    // --- NEW IMAGE CAPTCHA LOGIC ---
-    let captchaAnswer = "";
+    let currentCaptchaText = "";
 
-    function generateCaptcha() {
-        const canvas = document.getElementById('captchaCanvas');
-        const ctx = canvas.getContext('2d');
+    function togglePassword(inputId, buttonElement) {
+        const passInput = document.getElementById(inputId);
+        const openEyeSVG = '<svg class="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+        const closedEyeSVG = '<svg class="eye-icon" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
 
-        // Clear old canvas and fill with light gray background
+        if (passInput.type === "password") {
+            passInput.type = "text";
+            buttonElement.innerHTML = closedEyeSVG;
+        } else {
+            passInput.type = "password";
+            buttonElement.innerHTML = openEyeSVG;
+        }
+    }
+    // Listen for "Enter" key presses on the login form
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            // If the login section is currently visible, trigger the login function
+            if (!document.getElementById("loginSection").classList.contains("hidden")) {
+                login();
+            }
+        }
+    });
+
+    function drawCaptcha() {
+        const canvas = document.getElementById("captchaCanvas");
+        const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#f3f3f3";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Allowed characters (Removed O, 0, 1, I, l for easier reading)
-        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
-        captchaAnswer = "";
-        for (let i = 0; i < 6; i++) {
-            captchaAnswer += chars.charAt(Math.floor(Math.random() * chars.length));
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        currentCaptchaText = "";
+        for (let i = 0; i < 5; i++) {
+            currentCaptchaText += chars.charAt(Math.floor(Math.random() * chars.length));
         }
 
-        // 1. Draw random messy background lines (Noise)
-        for (let i = 0; i < 6; i++) {
-            ctx.strokeStyle = getRandomColor();
+        // FIX: Slightly smaller font and adjusted spacing so it easily fits inside the 140px width
+        ctx.font = "bold 22px Arial";
+        ctx.fillStyle = "#333";
+        ctx.letterSpacing = "4px";
+        ctx.fillText(currentCaptchaText, 20, 28);
+
+        ctx.strokeStyle = "#888";
+        for(let i=0; i<3; i++) {
             ctx.beginPath();
-            ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-            ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.moveTo(Math.random()*canvas.width, Math.random()*canvas.height);
+            ctx.lineTo(Math.random()*canvas.width, Math.random()*canvas.height);
             ctx.stroke();
         }
-
-        // 2. Draw the distorted letters
-        for (let i = 0; i < captchaAnswer.length; i++) {
-            ctx.font = "bold " + (18 + Math.random() * 8) + "px Arial"; // Random font size
-            ctx.fillStyle = getRandomColor(); // Random text color
-
-            ctx.save();
-            ctx.translate(15 + (i * 20), 25 + (Math.random() * 5)); // Random X and Y spacing
-            ctx.rotate((Math.random() - 0.5) * 0.5); // Random tilt angle
-            ctx.fillText(captchaAnswer[i], 0, 0);
-            ctx.restore();
-        }
-
-        // Clear the user's input box
-        document.getElementById('loginCaptchaInput').value = "";
     }
 
-    function getRandomColor() {
-        // Generates random dark colors so they stand out against the light background
-        const r = Math.floor(Math.random() * 150);
-        const g = Math.floor(Math.random() * 150);
-        const b = Math.floor(Math.random() * 150);
-        return `rgb(${r},${g},${b})`;
+    function showSignup() {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("forgotSection").classList.add("hidden");
+        document.getElementById("signupSection").classList.remove("hidden");
+        document.getElementById("formSubtitle").innerText = "Create New Citizen Account";
     }
 
-    // --- NAVIGATION LOGIC ---
-    function showScreen(screenId) {
-        document.getElementById('loginBox').style.display = 'none';
-        document.getElementById('signupBox').style.display = 'none';
-        document.getElementById('forgotBox').style.display = 'none';
-        document.getElementById(screenId).style.display = 'block';
-
-        if (screenId === 'loginBox') generateCaptcha();
+    function showForgot() {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("signupSection").classList.add("hidden");
+        document.getElementById("forgotSection").classList.remove("hidden");
+        document.getElementById("formSubtitle").innerText = "Password Recovery";
     }
 
-    // --- API CALLS ---
-    function signup() {
-        const u = document.getElementById('signUser').value.trim();
-        const p = document.getElementById('signPass').value;
-        const q = document.getElementById('signQuestion').value;
-        const a = document.getElementById('signAnswer').value.trim();
-
-        if(!u || !p || !a) return alert("Please fill all fields!");
-
-        const hasCapital = /[A-Z]/.test(p);
-        const hasNumber = /[0-9]/.test(p);
-        const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(p);
-
-        if (!hasCapital || !hasNumber || !hasSymbol) {
-            return alert("Weak Password! It must contain at least:\n- One Capital Letter\n- One Number\n- One Symbol (e.g. @, #, $)");
-        }
-
-        fetch('/api/users/signup', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: u, password: p, securityQuestion: q, securityAnswer: a })
-        }).then(async res => {
-            const msg = await res.text();
-            if(!res.ok) throw new Error(msg);
-            return msg;
-        }).then(msg => {
-            alert("Account created successfully! Please log in.");
-            document.getElementById('signUser').value = "";
-            document.getElementById('signPass').value = "";
-            document.getElementById('signAnswer').value = "";
-            showScreen('loginBox');
-        }).catch(err => alert(err.message));
+    function showLogin() {
+        document.getElementById("signupSection").classList.add("hidden");
+        document.getElementById("forgotSection").classList.add("hidden");
+        document.getElementById("loginSection").classList.remove("hidden");
+        document.getElementById("formSubtitle").innerText = "Secure Portal Access";
+        drawCaptcha();
     }
 
     function login() {
-        // Verify new Image Captcha (case-insensitive for better user experience)
-        const userInput = document.getElementById('loginCaptchaInput').value.trim().toLowerCase();
-        if (userInput !== captchaAnswer.toLowerCase()) {
-            alert("Incorrect Captcha! Please try the new image.");
-            generateCaptcha();
+        const u = document.getElementById("loginUser").value.trim();
+        const p = document.getElementById("loginPass").value.trim();
+        const c = document.getElementById("captchaInput").value.trim();
+
+        if(!u || !p || !c) return alert("Please fill in all fields!");
+        if(c.toUpperCase() !== currentCaptchaText) {
+            alert("Incorrect Captcha! Please try again.");
+            drawCaptcha();
             return;
         }
-
-        const u = document.getElementById('loginUser').value.trim();
-        const p = document.getElementById('loginPass').value;
 
         fetch('/api/users/login', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: u, password: p })
         }).then(async res => {
-            if(!res.ok) {
-                const errorMsg = await res.text();
-                throw new Error(errorMsg);
+            if(res.ok) {
+                const data = await res.json();
+                localStorage.setItem("currentUser", data.username);
+                localStorage.setItem("role", data.role);
+                if(data.role === "ADMIN") window.location.href = "/admin.html";
+                else window.location.href = "/home.html";
+            } else {
+                const err = await res.text();
+                alert(err || "Invalid credentials.");
+                drawCaptcha();
             }
-            return res.json();
-        }).then(data => {
-            localStorage.setItem("currentUser", data.username);
-            localStorage.setItem("role", data.role);
-            window.location.href = data.role === "ADMIN" ? "/admin.html" : "/home.html";
-        }).catch(err => {
-            alert(err.message);
-            generateCaptcha();
+        });
+    }
+
+    function signup() {
+        const u = document.getElementById("signupUser").value.trim();
+        const p = document.getElementById("signupPass").value.trim();
+        const q = document.getElementById("signupQ").value;
+        const a = document.getElementById("signupA").value.trim();
+
+        if(!u || !p || !a) return alert("Please fill out all signup fields!");
+
+        fetch('/api/users/signup', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: u, password: p, securityQuestion: q, securityAnswer: a })
+        }).then(async res => {
+            if(res.ok) {
+                alert("Account created successfully! Please sign in.");
+                showLogin();
+            } else {
+                const err = await res.text();
+                alert(err || "Signup failed.");
+            }
         });
     }
 
     function resetPassword() {
-        const u = document.getElementById('resetUser').value.trim();
-        const a = document.getElementById('resetAnswer').value.trim();
-        const np = document.getElementById('resetNewPass').value;
+        const u = document.getElementById("forgotUser").value.trim();
+        const a = document.getElementById("forgotA").value.trim();
+        const p = document.getElementById("forgotNewPass").value.trim();
 
-        if(!u || !a || !np) return alert("Please fill all fields!");
-
-        const hasCapital = /[A-Z]/.test(np);
-        const hasNumber = /[0-9]/.test(np);
-        const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(np);
-
-        if (!hasCapital || !hasNumber || !hasSymbol) {
-            return alert("Weak Password! It must contain at least:\n- One Capital Letter\n- One Number\n- One Symbol (e.g. @, #, $)");
-        }
+        if(!u || !a || !p) return alert("Please fill out all fields!");
 
         fetch('/api/users/reset-password', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: u, securityAnswer: a, password: np })
+            body: JSON.stringify({ username: u, securityAnswer: a, password: p })
         }).then(async res => {
-            const msg = await res.text();
-            if(!res.ok) throw new Error(msg);
-            return msg;
-        }).then(msg => {
-            alert("Success! You can now log in with your new password.");
-            document.getElementById('resetUser').value = "";
-            document.getElementById('resetAnswer').value = "";
-            document.getElementById('resetNewPass').value = "";
-            showScreen('loginBox');
-        }).catch(err => alert(err.message));
+            if(res.ok) {
+                alert("Password reset successfully! You can now log in.");
+                showLogin();
+            } else {
+                const err = await res.text();
+                alert(err || "Reset failed.");
+            }
+        });
     }
 
-    // Generate the first distorted image on page load
-    generateCaptcha();
+    drawCaptcha();
 </script>
 </body>
 </html>

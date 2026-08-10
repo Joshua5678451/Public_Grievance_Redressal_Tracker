@@ -3,101 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Grievance Tracker - Admin Panel</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin:0;}
-        .navbar { background: #343a40; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; color: white; }
-        .navbar a { color: white; text-decoration: none; font-size: 20px; font-weight: bold; }
-        .btn-logout { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        /* Premium Dark Theme (No Photo) */
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
+        }
 
-        .container { max-width: 1100px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; overflow-x: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: top; }
-        th { background: #343a40; color: white; }
-        .del-btn { background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight:bold;}
-        .save-btn { background: #28a745; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 5px; font-weight:bold;}
-        .date { font-size: 12px; color: #666; }
-        .dept { font-size: 12px; background: #17a2b8; color: white; padding: 2px 6px; border-radius: 4px; }
-        input, select { width: 100%; padding: 8px; box-sizing: border-box; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;}
+        /* Top Navigation Bar */
+        .navbar {
+            background: #161b22;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #30363d;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .navbar h2 {
+            margin: 0;
+            color: #8957e5; /* Purple for Admin to distinguish from Citizen Blue */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #welcomeMessage {
+            font-weight: 600;
+            color: #8b949e;
+        }
+
+        .btn-logout {
+            background: #da3633;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: #b62324; }
+
+        /* Main Content Container (Wider for data tables) */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 30px 40px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #ffffff;
+            font-size: 22px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 12px;
+            margin-bottom: 25px;
+        }
+
+        /* Admin Data Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #0d1117;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #30363d;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+
+        th {
+            background: #161b22;
+            color: #8b949e;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        td {
+            font-size: 14px;
+            color: #c9d1d9;
+        }
+
+        /* Thicker Dropdowns inside the table */
+        select {
+            padding: 8px 12px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        select:focus { outline: none; border-color: #8957e5; }
+
+        .btn-update {
+            background: #8957e5;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-update:hover { background: #9e6cf6; }
+
     </style>
 </head>
 <body>
+
 <div class="navbar">
-    <a>🛡️ Admin Authority Panel</a>
-    <button class="btn-logout" onclick="logout()">Logout</button>
+    <h2>🛠️ Administrator Control Room</h2>
+    <div class="user-controls">
+        <span id="welcomeMessage">Loading...</span>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
 </div>
 
 <div class="container">
-    <h2>Master Grievance List</h2>
-
-    <table>
-        <thead><tr>
-            <th width="15%">Citizen Info</th>
-            <th width="40%">Issue Details</th>
-            <th width="30%">Update Status & Add Note</th>
-            <th width="15%">Action</th>
-        </tr></thead>
-        <tbody id="tableBody"></tbody>
-    </table>
+    <div class="card">
+        <h3>Manage All System Grievances</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Citizen</th>
+                <th>Issue Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="adminGrievanceList">
+            <tr><td colspan="5" style="text-align:center;">Loading database records...</td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
-    if (localStorage.getItem("role") !== "ADMIN") window.location.href = "/";
-    function logout() { localStorage.clear(); window.location.href = "/"; }
+    const currentUser = localStorage.getItem("currentUser");
+    const role = localStorage.getItem("role");
 
-    function load() {
-        fetch('/api/grievances').then(r => r.json()).then(data => {
-            const tb = document.getElementById("tableBody");
-            tb.innerHTML = "";
-            data.forEach(g => {
-                const dateStr = new Date(g.submissionDate).toLocaleString();
-                const currentNote = g.adminNote ? g.adminNote : "";
+    // Strict Admin Security Check
+    if (!currentUser || role !== "ADMIN") {
+        alert("Unauthorized Access!");
+        window.location.href = "/";
+    }
 
-                tb.innerHTML += `
-                        <tr>
-                            <td>
-                                <b>👤 ${g.citizenName}</b><br>
-                                <span class="date">${dateStr}</span>
-                            </td>
-                            <td>
-                                <span class="dept">${g.department}</span><br>
-                                <b style="font-size:16px;">${g.title}</b><br>
-                                <p style="margin: 5px 0;">${g.description}</p>
-                            </td>
-                            <td>
-                                <select id="status-${g.id}">
-                                    <option value="${g.status}" hidden>${g.status}</option>
-                                    <option value="OPEN">OPEN</option>
-                                    <option value="SOLVING">SOLVING</option>
-                                    <option value="SOLVED">SOLVED</option>
-                                </select>
-                                <input type="text" id="note-${g.id}" placeholder="Type a reply note to citizen..." value="${currentNote}">
-                                <button class="save-btn" onclick="updateRecord(${g.id})">Save Update</button>
-                            </td>
-                            <td><button class="del-btn" onclick="deleteG(${g.id})">Delete</button></td>
-                        </tr>`;
-            });
+    document.getElementById("welcomeMessage").innerText = "Admin Logged In: " + currentUser;
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+    }
+
+    function loadAllGrievances() {
+        fetch('/api/grievances')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById("adminGrievanceList");
+                list.innerHTML = "";
+
+                if(data.length === 0) {
+                    list.innerHTML = "<tr><td colspan='5' style='text-align:center; color:#8b949e;'>No grievances found in system.</td></tr>";
+                    return;
+                }
+
+                data.forEach(g => {
+                    list.innerHTML += `
+                            <tr>
+                                <td style="font-weight:bold; color:#58a6ff;">${g.user ? g.user.username : 'Unknown'}</td>
+                                <td style="font-weight:bold;">${g.title}</td>
+                                <td>${g.description}</td>
+                                <td>
+                                    <select id="status-${g.id}">
+                                        <option value="PENDING" ${g.status === 'PENDING' ? 'selected' : ''}>PENDING</option>
+                                        <option value="RESOLVED" ${g.status === 'RESOLVED' ? 'selected' : ''}>RESOLVED</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn-update" onclick="updateStatus(${g.id})">Save Update</button>
+                                </td>
+                            </tr>
+                        `;
+                });
+            }).catch(err => console.error("Error loading grievances:", err));
+    }
+
+    function updateStatus(id) {
+        const newStatus = document.getElementById(`status-${id}`).value;
+
+        fetch(`/api/grievances/${id}?status=${newStatus}`, {
+            method: 'PUT'
+        }).then(res => {
+            if(res.ok) {
+                alert("Status updated successfully!");
+                loadAllGrievances();
+            } else {
+                alert("Failed to update status.");
+            }
         });
     }
 
-    function updateRecord(id) {
-        const newStatus = document.getElementById(`status-${id}`).value;
-        const newNote = document.getElementById(`note-${id}`).value;
-
-        fetch(`/api/grievances/${id}/status?status=${encodeURIComponent(newStatus)}&adminNote=${encodeURIComponent(newNote)}`, { method: 'PUT' })
-            .then(() => {
-                alert("Update sent to citizen!");
-                load();
-            });
-    }
-
-    function deleteG(id) {
-        if(confirm("Delete this record permanently?")) {
-            fetch(`/api/grievances/${id}`, { method: 'DELETE' }).then(() => load());
-        }
-    }
-
-    load();
+    // Initial Load
+    loadAllGrievances();
 </script>
 </body>
 </html>

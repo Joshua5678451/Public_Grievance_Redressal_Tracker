@@ -5,111 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Grievances</title>
     <style>
-        body, html { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f5; margin: 0; padding: 0; }
-        a { text-decoration: none; }
-
-        /* Sleek Dark Navbar */
-        .navbar { background-color: #0d1117; padding: 0 40px; height: 70px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; position: fixed; top: 0; width: 100%; box-sizing: border-box; z-index: 1000; }
-        .nav-left, .nav-right { display: flex; align-items: center; gap: 30px; }
-        .brand { color: #58a6ff; font-size: 22px; font-weight: bold; display: flex; align-items: center; gap: 10px;}
-        .nav-link { color: #c9d1d9; font-size: 15px; font-weight: 500; transition: color 0.2s; position: relative; padding: 25px 0;}
-        .nav-link:hover { color: #ffffff; }
-
-        .dropdown { position: relative; }
-        .dropdown-menu { position: absolute; top: 70px; left: 0; background: #161b22; border: 1px solid #30363d; border-radius: 8px; width: 220px; display: none; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.5); overflow: hidden; }
-        .dropdown:hover .dropdown-menu { display: flex; }
-        .dropdown-item { padding: 14px 20px; color: #c9d1d9; font-size: 14px; border-bottom: 1px solid #30363d; transition: background 0.2s;}
-        .dropdown-item:last-child { border-bottom: none; }
-        .dropdown-item:hover { background: #21262d; color: #ffffff; }
-
-        .user-greet { color: #8b949e; font-size: 14px; }
-        .btn-logout { background: transparent; color: #f85149; border: 1px solid #f85149; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: 0.2s;}
-        .btn-logout:hover { background: #f85149; color: #fff; }
-
-        /* Track Container */
-        .container { max-width: 800px; margin: 110px auto 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .card { border: 1px solid #ddd; padding: 20px; margin: 15px 0; border-radius: 8px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .dept-badge { font-size: 12px; background: #6c757d; color: white; padding: 4px 10px; border-radius: 12px; display: inline-block; margin-bottom: 10px; font-weight: bold;}
-        .status { font-weight: bold; padding: 4px 10px; border-radius: 4px; font-size: 13px; background: #ffc107; color: black; display: inline-block; }
-        .date { font-size: 13px; color: #888; margin-bottom: 10px;}
-        .del-btn { position: absolute; right: 20px; top: 20px; background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        .admin-note { background: #e9ecef; padding: 12px; margin-top: 15px; border-left: 4px solid #28a745; border-radius: 4px; font-size: 14px; }
-
-        /* 📱 MOBILE RESPONSIVENESS */
-        @media (max-width: 768px) {
-            .navbar { padding: 0 15px; }
-            .nav-left, .nav-right { gap: 10px; }
-            .brand { font-size: 15px; }
-            .nav-link { font-size: 13px; }
-            .user-greet { display: none; }
-            .btn-logout { padding: 5px 12px; font-size: 12px; }
-            .container { margin: 100px 15px 30px 15px; padding: 20px; }
-            .del-btn { position: relative; top: 0; right: 0; width: 100%; margin-top: 10px; } /* Makes delete button easier to tap on phone */
+        /* Pure Dark Theme - No External Links */
+        body, html {
+            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0d1117; color: #c9d1d9; min-height: 100vh;
         }
+
+        /* Navbar */
+        .navbar { background: #161b22; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; }
+        .navbar-brand { color: #58a6ff; font-size: 20px; font-weight: bold; text-decoration: none; }
+        .nav-links { display: inline-flex; align-items: center; margin-left: 20px; }
+        .nav-links a { color: #c9d1d9; text-decoration: none; margin: 0 15px; font-weight: 500; transition: color 0.2s;}
+        .nav-links a:hover { color: #58a6ff; }
+
+        /* FIX: Dropdown no longer disappears */
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { padding: 10px 0; }
+        .dropdown-content {
+            display: none; position: absolute; background-color: #161b22; min-width: 170px;
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.6); z-index: 10; border: 1px solid #30363d;
+            border-radius: 8px; overflow: hidden; top: 100%; left: 0;
+            margin-top: -5px; /* Overlaps slightly */
+        }
+        .dropdown-content a { color: #c9d1d9; padding: 12px 16px; text-decoration: none; display: block; margin: 0; }
+        .dropdown-content a:hover { background-color: #30363d; color: #58a6ff; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .user-controls { display: flex; align-items: center; gap: 20px; color: #8b949e; }
+        .btn-logout { background: transparent; color: #da3633; border: 1px solid #da3633; padding: 6px 15px; border-radius: 20px; cursor: pointer; font-weight: bold;}
+        .btn-logout:hover { background: #da3633; color: white; }
+
+        /* Dashboard Styles */
+        .container { max-width: 800px; margin: 50px auto; padding: 0 20px; }
+        .dashboard-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 40px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); }
+        .dashboard-card h2 { margin-top: 0; color: #ffffff; margin-bottom: 30px; font-size: 24px; }
+        .grievance-item { background: #0d1117; border: 1px solid #30363d; border-radius: 10px; padding: 25px; margin-bottom: 25px; }
+        .g-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .dept-badge { background: #30363d; color: #c9d1d9; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .btn-delete { background: #da3633; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-delete:hover { background: #b62324; }
+        .g-title { color: #ffffff; font-size: 22px; margin: 0 0 5px 0; }
+        .g-desc { color: #c9d1d9; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+        .status-badge { display: inline-block; background: rgba(210, 153, 34, 0.15); color: #d29922; border: 1px solid rgba(210, 153, 34, 0.4); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; }
+        .status-resolved { background: rgba(35, 134, 54, 0.15); color: #3fb950; border: 1px solid rgba(35, 134, 54, 0.4); }
     </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="nav-left">
-        <a href="/home.html" class="brand">🏛️ Grievance Tracker</a>
-        <a href="/home.html" class="nav-link">Home</a>
-        <div class="dropdown">
-            <a href="#" class="nav-link" style="display:flex; align-items:center; gap:5px;">Grievances <span style="font-size:10px;">▼</span></a>
-            <div class="dropdown-menu">
-                <a href="/file.html" class="dropdown-item">✍️ File a Grievance</a>
-                <a href="/track.html" class="dropdown-item">🔍 Filed Grievances</a>
-            </div>
-        </div>
+<div class="navbar">
+    <div>
+        <a href="#" class="navbar-brand">🏛️ Grievance Tracker</a>
+        <span class="nav-links">
+                <a href="/home.html">Home</a>
+                <div class="dropdown">
+                    <a href="#" class="dropbtn">Grievances ▾</a>
+                    <div class="dropdown-content">
+                        <a href="/file.html">File a Grievance</a>
+                        <a href="/track.html">Track Progress</a>
+                    </div>
+                </div>
+            </span>
     </div>
-    <div class="nav-right">
-        <span class="user-greet" id="welcomeUser"></span>
+    <div class="user-controls">
+        <span id="userNameDisplay">Hi, Citizen</span>
         <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
-</nav>
+</div>
 
 <div class="container">
-    <h2 style="margin-top:0;">My Filed Grievances</h2>
-    <div id="list"></div>
+    <div class="dashboard-card">
+        <h2>My Filed Grievances</h2>
+        <div id="grievanceList">
+            <p style="color:#8b949e;">Loading your history...</p>
+        </div>
+    </div>
 </div>
 
 <script>
-    const user = localStorage.getItem("currentUser");
-    if (!user) window.location.href = "/";
-    document.getElementById("welcomeUser").innerText = "Hi, " + user;
-    function logout() { localStorage.clear(); window.location.href = "/"; }
-
-    function load() {
-        fetch(`/api/grievances/user/${user}`).then(res => res.json()).then(data => {
-            const list = document.getElementById("list");
-            list.innerHTML = "";
-            if(data.length === 0) list.innerHTML = "<p style='text-align:center; color:#666;'>You haven't filed any grievances yet.</p>";
-
-            data.forEach(g => {
-                const dateStr = new Date(g.submissionDate).toLocaleString();
-                const noteHtml = g.adminNote ? `<div class="admin-note"><strong>Admin Reply:</strong> ${g.adminNote}</div>` : '';
-
-                list.innerHTML += `
-                        <div class="card">
-                            <button class="del-btn" onclick="deleteG(${g.id})">Delete</button>
-                            <div class="dept-badge">🏛️ ${g.department}</div>
-                            <h3 style="margin:0 0 5px 0;">${g.title}</h3>
-                            <div class="date">📅 ${dateStr}</div>
-                            <p style="margin:10px 0;">${g.description}</p>
-                            <div class="status">STATUS: ${g.status}</div>
-                            ${noteHtml}
-                        </div>
-                    `;
-            });
-        });
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+        document.getElementById("userNameDisplay").innerText = "Hi, " + currentUser;
+    } else {
+        window.location.href = "/";
     }
 
-    function deleteG(id) {
-        if(confirm("Are you sure you want to delete this?")) {
-            fetch(`/api/grievances/${id}`, { method: 'DELETE' }).then(() => load());
+    // Fix: Working Logout Function
+    function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+    }
+
+    // Fetch user grievances
+    function loadGrievances() {
+        fetch(`/api/grievances/user/${currentUser}`)
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById("grievanceList");
+                list.innerHTML = "";
+
+                if(data.length === 0) {
+                    list.innerHTML = "<p style='color:#8b949e;'>You have not submitted any grievances yet.</p>";
+                    return;
+                }
+
+                data.forEach(g => {
+                    const isResolved = g.status === 'RESOLVED';
+                    list.innerHTML += `
+                            <div class="grievance-item" id="grievance-${g.id}">
+                                <div class="g-header">
+                                    <span class="dept-badge">🏛️ ${g.department || 'General'}</span>
+                                    <button class="btn-delete" onclick="deleteGrievance(${g.id})">Delete</button>
+                                </div>
+                                <h3 class="g-title">${g.title}</h3>
+                                <p class="g-desc">${g.description}</p>
+                                <div class="status-badge ${isResolved ? 'status-resolved' : ''}">STATUS: ${g.status}</div>
+                            </div>
+                        `;
+                });
+            }).catch(err => console.error("Error loading grievances:", err));
+    }
+
+    function deleteGrievance(id) {
+        if (confirm("Are you sure you want to delete this grievance?")) {
+            fetch(`/api/grievances/${id}`, { method: 'DELETE' })
+                .then(res => {
+                    if (res.ok) {
+                        document.getElementById(`grievance-${id}`).remove();
+                    } else {
+                        alert("Failed to delete grievance.");
+                    }
+                });
         }
     }
-    load();
+
+    loadGrievances();
 </script>
 </body>
 </html>
