@@ -106,19 +106,22 @@
     function submitGrievance() {
         const title = document.getElementById("title").value.trim();
         const desc = document.getElementById("details").value.trim();
-        // 1. Grab the department value
         const dept = document.getElementById("department").value;
 
-        // 2. Make sure they didn't leave the dropdown on the default text
         if (dept === "-- Select a Department --") return alert("Please select a department.");
         if (!title || !desc) return alert("Please fill out all fields.");
 
+        // THE BOMB-PROOF PAYLOAD:
+        // We send the name in three different formats.
+        // Spring Boot will automatically catch the one it needs and ignore the rest!
         const payload = {
             title: title,
             description: desc,
-            department: dept, // 3. Send the department to your Java backend
+            department: dept,
             status: "PENDING",
-            user: { username: currentUser }
+            citizenName: currentUser,      // Matches your Grievance.java
+            username: currentUser,         // Backup format 1
+            user: { username: currentUser } // Backup format 2
         };
 
         fetch('/api/grievances', {

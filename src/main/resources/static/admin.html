@@ -5,135 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grievance Tracker - Admin Panel</title>
     <style>
-        /* Premium Dark Theme (No Photo) */
-        body, html {
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0d1117;
-            color: #c9d1d9;
-            min-height: 100vh;
-        }
-
-        /* Top Navigation Bar */
-        .navbar {
-            background: #161b22;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #30363d;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .navbar h2 {
-            margin: 0;
-            color: #8957e5; /* Purple for Admin to distinguish from Citizen Blue */
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        #welcomeMessage {
-            font-weight: 600;
-            color: #8b949e;
-        }
-
-        .btn-logout {
-            background: #da3633;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-logout:hover { background: #b62324; }
-
-        /* Main Content Container (Wider for data tables) */
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 16px;
-            padding: 30px 40px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        }
-
-        .card h3 {
-            margin-top: 0;
-            color: #ffffff;
-            font-size: 22px;
-            border-bottom: 1px solid #30363d;
-            padding-bottom: 12px;
-            margin-bottom: 25px;
-        }
-
-        /* Admin Data Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #0d1117;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #30363d;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #30363d;
-        }
-
-        th {
-            background: #161b22;
-            color: #8b949e;
-            font-size: 13px;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        td {
-            font-size: 14px;
-            color: #c9d1d9;
-        }
-
-        /* Thicker Dropdowns inside the table */
-        select {
-            padding: 8px 12px;
-            background: #161b22;
-            border: 1px solid #30363d;
-            color: #ffffff;
-            border-radius: 6px;
-            font-size: 13px;
-            cursor: pointer;
-        }
+        /* Premium Dark Theme */
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0d1117; color: #c9d1d9; min-height: 100vh; }
+        .navbar { background: #161b22; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .navbar h2 { margin: 0; color: #8957e5; display: flex; align-items: center; gap: 10px; font-size: 22px; }
+        .user-controls { display: flex; align-items: center; gap: 20px; }
+        #welcomeMessage { font-weight: 600; color: #8b949e; }
+        .btn-logout { background: transparent; color: #da3633; border: 1px solid #da3633; padding: 6px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s;}
+        .btn-logout:hover { background: #da3633; color: white; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 30px 40px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); }
+        .card h3 { margin-top: 0; color: #ffffff; font-size: 22px; border-bottom: 1px solid #30363d; padding-bottom: 12px; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; background: #0d1117; border-radius: 10px; overflow: hidden; border: 1px solid #30363d; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #30363d; }
+        th { background: #161b22; color: #8b949e; font-size: 13px; text-transform: uppercase; font-weight: 700; }
+        td { font-size: 14px; color: #c9d1d9; }
+        select { padding: 8px 12px; background: #161b22; border: 1px solid #30363d; color: #ffffff; border-radius: 6px; font-size: 13px; cursor: pointer; }
         select:focus { outline: none; border-color: #8957e5; }
-
-        .btn-update {
-            background: #8957e5;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .btn-update { background: #8957e5; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
         .btn-update:hover { background: #9e6cf6; }
-
     </style>
 </head>
 <body>
@@ -170,9 +60,7 @@
     const currentUser = localStorage.getItem("currentUser");
     const role = localStorage.getItem("role");
 
-    // Strict Admin Security Check
     if (!currentUser || role !== "ADMIN") {
-        alert("Unauthorized Access!");
         window.location.href = "/";
     }
 
@@ -183,10 +71,13 @@
         window.location.href = "/";
     }
 
+    let allGrievances = [];
+
     function loadAllGrievances() {
         fetch('/api/grievances')
             .then(res => res.json())
             .then(data => {
+                allGrievances = data;
                 const list = document.getElementById("adminGrievanceList");
                 list.innerHTML = "";
 
@@ -196,15 +87,20 @@
                 }
 
                 data.forEach(g => {
+                    // Matches your Java code to display the name correctly!
+                    // This checks every possible place the name could be hiding!
+                    const nameToDisplay = g.citizenName || (g.user ? g.user.username : null) || g.username || 'Unknown';
+
                     list.innerHTML += `
                             <tr>
-                                <td style="font-weight:bold; color:#58a6ff;">${g.user ? g.user.username : 'Unknown'}</td>
+                                <td style="font-weight:bold; color:#58a6ff;">${nameToDisplay}</td>
                                 <td style="font-weight:bold;">${g.title}</td>
                                 <td>${g.description}</td>
                                 <td>
                                     <select id="status-${g.id}">
                                         <option value="PENDING" ${g.status === 'PENDING' ? 'selected' : ''}>PENDING</option>
-                                        <option value="RESOLVED" ${g.status === 'RESOLVED' ? 'selected' : ''}>RESOLVED</option>
+                                        <option value="SOLVING" ${g.status === 'SOLVING' ? 'selected' : ''}>SOLVING</option>
+                                        <option value="SOLVED" ${g.status === 'SOLVED' ? 'selected' : ''}>SOLVED</option>
                                     </select>
                                 </td>
                                 <td>
@@ -219,19 +115,21 @@
     function updateStatus(id) {
         const newStatus = document.getElementById(`status-${id}`).value;
 
-        fetch(`/api/grievances/${id}?status=${newStatus}`, {
+        // THE FIX: Added "/status" to perfectly match Line 31 of your GrievanceController.java!
+        fetch(`/api/grievances/${id}/status?status=${newStatus}`, {
             method: 'PUT'
-        }).then(res => {
+        }).then(async res => {
             if(res.ok) {
                 alert("Status updated successfully!");
                 loadAllGrievances();
             } else {
-                alert("Failed to update status.");
+                const err = await res.text();
+                alert("Backend Error: " + (err || res.statusText));
             }
+        }).catch(err => {
+            alert("Network error: Could not reach the server.");
         });
     }
-
-    // Initial Load
     loadAllGrievances();
 </script>
 </body>
